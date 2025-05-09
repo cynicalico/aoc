@@ -8,8 +8,8 @@ use std::{env, fmt, fs};
 use aoc::util::parse::ParseOps;
 use aoc::*;
 use clap::{Parser, Subcommand, ValueEnum};
-use reqwest::Url;
 use reqwest::cookie::Jar;
+use reqwest::Url;
 use scraper::{Html, Selector};
 
 /// AoC CLI
