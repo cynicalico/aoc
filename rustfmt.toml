@@ -1,0 +1,6 @@
+imports_granularity = "Module"
+group_imports = "StdExternalCrate"
+use_small_heuristics = "Max"
+use_field_init_shorthand = true
+reorder_impl_items = true
+fn_single_line = true
