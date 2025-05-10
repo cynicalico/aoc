@@ -2,12 +2,14 @@ use std::error::Error;
 use std::fmt;
 
 pub mod util {
+    pub mod array;
     pub mod integer;
     pub mod parse;
 }
 
 pub mod y2015 {
     pub mod day01;
+    pub mod day02;
 }
 
 #[derive(Debug)]

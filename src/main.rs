@@ -8,8 +8,8 @@ use std::{env, fmt, fs};
 use aoc::util::parse::ParseOps;
 use aoc::*;
 use clap::{Parser, Subcommand, ValueEnum};
-use reqwest::cookie::Jar;
 use reqwest::Url;
+use reqwest::cookie::Jar;
 use scraper::{Html, Selector};
 
 /// AoC CLI
@@ -60,9 +60,6 @@ enum Command {
 
         /// Part of the puzzle
         part: PuzzlePart,
-
-        /// Answer to the puzzle
-        answer: String,
     },
 }
 
@@ -80,7 +77,7 @@ fn main() {
         Command::Run { year, day, input_path_override, totals } => {
             run(year, day, input_path_override, totals)
         }
-        Command::Submit { year, day, part, answer } => submit(year, day, part, answer),
+        Command::Submit { year, day, part } => submit(year, day, part),
     } {
         println!("Error: {err}");
     }
@@ -190,16 +187,21 @@ struct Solution {
     wrapper: fn(&str) -> Result<(Option<String>, Option<String>), Box<dyn Error>>,
 }
 
+fn filtered_solutions(year: Option<u32>, day: Option<u32>) -> Vec<Solution> {
+    empty()
+        .chain(y2015())
+        .filter(|s| year.is_none_or(|y| y == s.year))
+        .filter(|s| day.is_none_or(|y| y == s.day))
+        .collect()
+}
+
 fn run(
     year: Option<u32>,
     day: Option<u32>,
     input_path_override: Option<PathBuf>,
     totals: bool,
 ) -> Result<(), Box<dyn Error>> {
-    let solutions = empty()
-        .chain(y2015())
-        .filter(|s| year.is_none_or(|y| y == s.year))
-        .filter(|s| day.is_none_or(|y| y == s.day));
+    let solutions = filtered_solutions(year, day);
 
     let mut solved = 0;
     let mut duration = Duration::ZERO;
@@ -244,8 +246,30 @@ fn run(
     Ok(())
 }
 
-fn submit(year: u32, day: u32, part: PuzzlePart, answer: String) -> Result<(), Box<dyn Error>> {
+fn submit(year: u32, day: u32, part: PuzzlePart) -> Result<(), Box<dyn Error>> {
     let client = http_client()?;
+
+    let answer = {
+        let solutions = filtered_solutions(Some(year), Some(day));
+        if solutions.is_empty() {
+            Err(format!("No solution found for {year} Day {day:02}").into())
+        } else if solutions.len() > 1 {
+            Err(format!("Multiple solutions found for {year} Day {day:02}").into())
+        } else {
+            let Solution { input_path, wrapper, .. } = &solutions[0];
+            match wrapper(input_path.to_str().unwrap()) {
+                Ok((part1, part2)) => match part {
+                    PuzzlePart::P1 => {
+                        part1.ok_or(format!("Part 1 unsolved for {year} Day {day:02}").into())
+                    }
+                    PuzzlePart::P2 => {
+                        part2.ok_or(format!("Part 2 unsolved for {year} Day {day:02}").into())
+                    }
+                },
+                Err(err) => Err(err),
+            }
+        }
+    }?;
 
     let mut params = HashMap::new();
     match part {
@@ -336,5 +360,5 @@ macro_rules! make_solutions {
 }
 
 make_solutions!(y2015
-    day01
+    day01, day02
 );
