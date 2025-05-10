@@ -4,7 +4,7 @@ use std::error::Error;
 use crate::util::array::CastExt;
 use crate::util::parse::ParseOps;
 
-type ParsedInput = Vec<[u32; 3]>;
+pub type ParsedInput = Vec<[u32; 3]>;
 
 pub fn parse(input: &str) -> Result<ParsedInput, Box<dyn Error>> {
     Ok(input

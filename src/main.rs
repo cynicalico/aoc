@@ -8,8 +8,8 @@ use std::{env, fmt, fs};
 use aoc::util::parse::ParseOps;
 use aoc::*;
 use clap::{Parser, Subcommand, ValueEnum};
-use reqwest::Url;
 use reqwest::cookie::Jar;
+use reqwest::Url;
 use scraper::{Html, Selector};
 
 /// AoC CLI
@@ -347,10 +347,8 @@ macro_rules! make_solutions {
 
                     let input = fs::read_to_string(filepath)?;
                     let parsed = parse(&input)?;
-                    let part1 = part1(&parsed);
-                    let part2 = part2(&parsed);
 
-                    Ok((part1.map(|v| v.to_string()), part2.map(|v| v.to_string())))
+                    Ok((part1(&parsed).map(|v| v.to_string()), part2(&parsed).map(|v| v.to_string())))
                 };
 
                 Solution { year: year.unsigned(), day: day.unsigned(), input_path, wrapper }
@@ -360,5 +358,5 @@ macro_rules! make_solutions {
 }
 
 make_solutions!(y2015
-    day01, day02
+    day01, day02, day03
 );

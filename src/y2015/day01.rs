@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::error::Error;
 
-type ParsedInput<'a> = &'a str;
+pub type ParsedInput<'a> = &'a str;
 
 pub fn parse(input: &str) -> Result<ParsedInput, Box<dyn Error>> { Ok(input) }
 
