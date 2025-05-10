@@ -165,7 +165,6 @@ fn download_input(
 
     if force || !fs::exists(&input_path)? {
         let input_url = format!("https://adventofcode.com/{year}/day/{day}/input");
-        println!("{}", input_url);
 
         let r = client.get(&input_url).send()?;
 

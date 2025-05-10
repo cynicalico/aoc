@@ -16,6 +16,7 @@ pub mod y2015 {
     pub mod day02;
     pub mod day03;
     pub mod day04;
+    pub mod day05;
 }
 
 pub struct Solution {
@@ -50,7 +51,7 @@ macro_rules! make_solutions {
 }
 
 make_solutions!(y2015
-    day01, day02, day03, day04
+    day01, day02, day03, day04, day05
 );
 
 pub fn filtered_solutions(year: Option<u32>, day: Option<u32>) -> Vec<Solution> {
