@@ -1,11 +1,9 @@
 use std::collections::HashMap;
 use std::error::Error;
-use std::iter::empty;
 use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};
 use std::{env, fmt, fs};
 
-use aoc::util::parse::ParseOps;
 use aoc::*;
 use clap::{Parser, Subcommand, ValueEnum};
 use reqwest::cookie::Jar;
@@ -180,21 +178,6 @@ fn download_input(
     Ok(())
 }
 
-struct Solution {
-    year: u32,
-    day: u32,
-    input_path: PathBuf,
-    wrapper: fn(&str) -> Result<(Option<String>, Option<String>), Box<dyn Error>>,
-}
-
-fn filtered_solutions(year: Option<u32>, day: Option<u32>) -> Vec<Solution> {
-    empty()
-        .chain(y2015())
-        .filter(|s| year.is_none_or(|y| y == s.year))
-        .filter(|s| day.is_none_or(|y| y == s.day))
-        .collect()
-}
-
 fn run(
     year: Option<u32>,
     day: Option<u32>,
@@ -332,31 +315,3 @@ fn http_client() -> Result<reqwest::blocking::Client, Box<dyn Error>> {
         .build()
         .map_err(|e| e.into())
 }
-
-macro_rules! make_solutions {
-    ($year:tt $($day:tt),*) => {
-        fn $year() -> Vec<Solution> {
-            vec![$({
-                let year = stringify!($year);
-                let day = stringify!($day);
-
-                let input_path = Path::new("input").join(year).join(day).with_extension("txt");
-
-                let wrapper = |filepath: &str| {
-                    use $year::$day::*;
-
-                    let input = fs::read_to_string(filepath)?;
-                    let parsed = parse(&input)?;
-
-                    Ok((part1(&parsed).map(|v| v.to_string()), part2(&parsed).map(|v| v.to_string())))
-                };
-
-                Solution { year: year.unsigned(), day: day.unsigned(), input_path, wrapper }
-            },)*]
-        }
-    }
-}
-
-make_solutions!(y2015
-    day01, day02, day03
-);
