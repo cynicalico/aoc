@@ -114,6 +114,7 @@ fn download(year: u32, day: u32) -> Result<(), Box<dyn Error>> {
 
     download_puzzle(&client, year, day, false)?;
     download_input(&client, year, day, false)?;
+    make_solution_template(year, day, false)?;
 
     Ok(())
 }
@@ -156,7 +157,7 @@ fn download_puzzle(
         fs::create_dir_all(puzzle_path.parent().unwrap())?;
         fs::write(&puzzle_path, file_content)?;
     } else {
-        println!("{} exists, skipping...", puzzle_path.display())
+        println!("{} exists, skipping...", puzzle_path.display());
     }
 
     Ok(())
@@ -181,7 +182,36 @@ fn download_input(
         fs::create_dir_all(input_path.parent().unwrap())?;
         fs::write(input_path, r.text()?)?;
     } else {
-        println!("{} exists, skipping...", input_path.display())
+        println!("{} exists, skipping...", input_path.display());
+    }
+
+    Ok(())
+}
+
+fn make_solution_template(year: u32, day: u32, force: bool) -> Result<(), Box<dyn Error>> {
+    let solution_path = Path::new("src")
+        .join(format!("y{year}"))
+        .join(format!("day{day:02}"))
+        .with_extension("rs");
+
+    if force || !fs::exists(&solution_path)? {
+        fs::create_dir_all(solution_path.parent().unwrap())?;
+        fs::write(
+            solution_path,
+            "\
+use std::error::Error;
+
+pub type ParsedInput = _;
+
+pub fn parse(input: &str) -> Result<ParsedInput, Box<dyn Error>> { todo!() }
+
+pub fn part1(input: &ParsedInput) -> Option<_> { None }
+
+pub fn part2(input: &ParsedInput) -> Option<_> { None }
+",
+        )?;
+    } else {
+        println!("{} exists, skipping...", solution_path.display());
     }
 
     Ok(())

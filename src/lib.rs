@@ -1,3 +1,5 @@
+#![feature(let_chains)]
+
 use std::error::Error;
 use std::iter::empty;
 use std::path::{Path, PathBuf};
@@ -18,6 +20,7 @@ pub mod y2015 {
     pub mod day04;
     pub mod day05;
     pub mod day06;
+    pub mod day07;
 }
 
 pub struct Solution {
@@ -52,7 +55,7 @@ macro_rules! make_solutions {
 }
 
 make_solutions!(y2015
-    day01, day02, day03, day04, day05, day06
+    day01, day02, day03, day04, day05, day06, day07
 );
 
 pub fn filtered_solutions(year: Option<u32>, day: Option<u32>) -> Vec<Solution> {
