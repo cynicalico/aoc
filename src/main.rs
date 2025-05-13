@@ -6,8 +6,8 @@ use std::{env, fmt, fs};
 
 use aoc::*;
 use clap::{Parser, Subcommand, ValueEnum};
-use reqwest::cookie::Jar;
 use reqwest::Url;
+use reqwest::cookie::Jar;
 use scraper::{Html, Selector};
 
 /// AoC CLI
@@ -72,9 +72,12 @@ fn main() {
 
     if let Err(err) = match args.command {
         Command::Download { year, day } => download(year, day),
-        Command::Run { year, day, input_path_override, totals } => {
-            run(year, day, input_path_override, totals)
-        }
+        Command::Run {
+            year,
+            day,
+            input_path_override,
+            totals,
+        } => run(year, day, input_path_override, totals),
         Command::Submit { year, day, part } => submit(year, day, part),
     } {
         println!("Error: {err}");
@@ -88,7 +91,10 @@ impl Error for SessionTokenError {}
 
 impl fmt::Display for SessionTokenError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Failed to find environment variable: 'AOC_SESSION_TOKEN'")
+        write!(
+            f,
+            "Failed to find environment variable: 'AOC_SESSION_TOKEN'"
+        )
     }
 }
 
@@ -133,7 +139,11 @@ fn download_puzzle(
 
         let file_content = html.select(&selector).fold(String::new(), |acc, article| {
             if let Ok(md) = htmd::convert(&article.html()) {
-                if acc.is_empty() { acc + &md } else { acc + &format!("\n\n{md}") }
+                if acc.is_empty() {
+                    acc + &md
+                } else {
+                    acc + &format!("\n\n{md}")
+                }
             } else {
                 acc
             }
@@ -188,7 +198,13 @@ fn run(
     let mut solved = 0;
     let mut duration = Duration::ZERO;
 
-    for Solution { year, day, input_path, wrapper } in solutions {
+    for Solution {
+        year,
+        day,
+        input_path,
+        wrapper,
+    } in solutions
+    {
         println!("{year} Day {day:02}");
 
         let filepath = &input_path_override.as_ref().unwrap_or(&input_path);
@@ -238,7 +254,11 @@ fn submit(year: u32, day: u32, part: PuzzlePart) -> Result<(), Box<dyn Error>> {
         } else if solutions.len() > 1 {
             Err(format!("Multiple solutions found for {year} Day {day:02}").into())
         } else {
-            let Solution { input_path, wrapper, .. } = &solutions[0];
+            let Solution {
+                input_path,
+                wrapper,
+                ..
+            } = &solutions[0];
             match wrapper(input_path.to_str().unwrap()) {
                 Ok((part1, part2)) => match part {
                     PuzzlePart::P1 => {

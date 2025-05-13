@@ -8,7 +8,9 @@ pub fn parse(input: &str) -> Result<ParsedInput, Box<dyn Error>> { Ok(input.trim
 
 pub fn part1(input: &ParsedInput) -> Option<u32> {
     for ans in 1.. {
-        let hash = Md5::new_with_prefix(input).chain_update(ans.to_string()).finalize();
+        let hash = Md5::new_with_prefix(input)
+            .chain_update(ans.to_string())
+            .finalize();
         if hash[0] == 0 && hash[1] == 0 && (hash[2] >> 4) & 0xf == 0 {
             return Some(ans);
         }
@@ -18,7 +20,9 @@ pub fn part1(input: &ParsedInput) -> Option<u32> {
 
 pub fn part2(input: &ParsedInput) -> Option<u32> {
     for ans in 1.. {
-        let hash = Md5::new_with_prefix(input).chain_update(ans.to_string()).finalize();
+        let hash = Md5::new_with_prefix(input)
+            .chain_update(ans.to_string())
+            .finalize();
         if hash[0] == 0 && hash[1] == 0 && hash[2] == 0 {
             return Some(ans);
         }

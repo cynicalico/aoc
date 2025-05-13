@@ -47,11 +47,17 @@ impl ParseOps for &str {
     }
 
     fn iter_unsigned<T: Unsigned<T>>(&self) -> ParseUnsigned<'_, T> {
-        ParseUnsigned { bytes: self.bytes(), phantom: PhantomData }
+        ParseUnsigned {
+            bytes: self.bytes(),
+            phantom: PhantomData,
+        }
     }
 
     fn iter_signed<T: Signed<T>>(&self) -> ParseSigned<'_, T> {
-        ParseSigned { bytes: self.bytes(), phantom: PhantomData }
+        ParseSigned {
+            bytes: self.bytes(),
+            phantom: PhantomData,
+        }
     }
 }
 

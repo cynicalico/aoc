@@ -9,7 +9,11 @@ pub type ParsedInput = Vec<[u32; 3]>;
 pub fn parse(input: &str) -> Result<ParsedInput, Box<dyn Error>> {
     Ok(input
         .lines()
-        .map(|line| line.iter_unsigned::<u32>().cast().expect("lines are formatted LxWxH"))
+        .map(|line| {
+            line.iter_unsigned::<u32>()
+                .cast()
+                .expect("lines are formatted LxWxH")
+        })
         .collect())
 }
 

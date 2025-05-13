@@ -37,9 +37,12 @@ fn is_string_nice_p2(s: &str) -> bool {
     let mut pairs: HashMap<(char, char), Vec<usize>> = HashMap::new();
     let mut double_separated_count = 0;
 
-    for (i, (c1, c2, c3)) in
-        izip!(s.chars(), s.chars().skip(1).chain(['\0']), s.chars().skip(2).chain(['\0', '\0']))
-            .enumerate()
+    for (i, (c1, c2, c3)) in izip!(
+        s.chars(),
+        s.chars().skip(1).chain(['\0']),
+        s.chars().skip(2).chain(['\0', '\0'])
+    )
+    .enumerate()
     {
         pairs.entry((c1, c2)).or_default().push(i);
         if c1 == c3 {
