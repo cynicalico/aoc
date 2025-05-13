@@ -101,35 +101,26 @@ pub fn parse(input: &str) -> Result<ParsedInput, Box<dyn Error>> {
     Ok((id_map, state))
 }
 
-pub fn resolve(state: &mut [Op], start: usize) {
-    fn calc(state: &mut [Op], id: usize) -> u64 {
-        let v = match state[id] {
-            Op::None => unreachable!(),
-            Op::Const(v) => v,
-            Op::ConstId(other) => calc(state, other),
-            Op::ConstAnd(v, rhs) => v & calc(state, rhs),
-            Op::And(lhs, rhs) => calc(state, lhs) & calc(state, rhs),
-            Op::Or(lhs, rhs) => calc(state, lhs) | calc(state, rhs),
-            Op::LShift(lhs, sh) => calc(state, lhs) << sh,
-            Op::RShift(lhs, sh) => calc(state, lhs) >> sh,
-            Op::Not(rhs) => !calc(state, rhs),
-        };
-        state[id] = Op::Const(v);
-        v
-    }
-
-    calc(state, start);
+fn calc(state: &mut [Op], id: usize) -> u64 {
+    let v = match state[id] {
+        Op::None => unreachable!(),
+        Op::Const(v) => v,
+        Op::ConstId(other) => calc(state, other),
+        Op::ConstAnd(v, rhs) => v & calc(state, rhs),
+        Op::And(lhs, rhs) => calc(state, lhs) & calc(state, rhs),
+        Op::Or(lhs, rhs) => calc(state, lhs) | calc(state, rhs),
+        Op::LShift(lhs, sh) => calc(state, lhs) << sh,
+        Op::RShift(lhs, sh) => calc(state, lhs) >> sh,
+        Op::Not(rhs) => !calc(state, rhs),
+    };
+    state[id] = Op::Const(v);
+    v
 }
 
 pub fn part1(input: &ParsedInput) -> Option<u64> {
     let (id_map, mut state) = input.to_owned();
 
-    resolve(&mut state, id_map["a"]);
-    if let Op::Const(v) = state[id_map["a"]] {
-        Some(v)
-    } else {
-        None
-    }
+    calc(&mut state, id_map["a"]).into()
 }
 
 pub fn part2(input: &ParsedInput) -> Option<u64> {
@@ -138,10 +129,5 @@ pub fn part2(input: &ParsedInput) -> Option<u64> {
     // This recalculates but idc tbh
     state[id_map["b"]] = Op::Const(part1(&input.clone()).unwrap());
 
-    resolve(&mut state, id_map["a"]);
-    if let Op::Const(v) = state[id_map["a"]] {
-        Some(v)
-    } else {
-        None
-    }
+    calc(&mut state, id_map["a"]).into()
 }
