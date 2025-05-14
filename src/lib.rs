@@ -9,6 +9,7 @@ use crate::util::parse::ParseOps;
 
 pub mod util {
     pub mod array;
+    pub mod id_cache;
     pub mod integer;
     pub mod parse;
 }
@@ -22,6 +23,7 @@ pub mod y2015 {
     pub mod day06;
     pub mod day07;
     pub mod day08;
+    pub mod day09;
 }
 
 pub struct Solution {
@@ -57,7 +59,7 @@ macro_rules! make_solutions {
 
 make_solutions!(y2015
     day01, day02, day03, day04, day05,
-    day06, day07, day08
+    day06, day07, day08, day09
 );
 
 pub fn filtered_solutions(year: Option<u32>, day: Option<u32>) -> Vec<Solution> {
