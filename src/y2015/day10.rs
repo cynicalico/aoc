@@ -3,9 +3,7 @@ use std::iter::once;
 
 use itertools::Itertools;
 
-pub type ParsedInput<'a> = &'a str;
-
-pub fn parse(input: &str) -> Result<ParsedInput, Box<dyn Error>> { Ok(input.trim()) }
+pub type ParsedInput = (usize, usize);
 
 fn say(seq: &str) -> String {
     let mut s = String::new();
@@ -27,18 +25,21 @@ fn say(seq: &str) -> String {
     s
 }
 
-pub fn part1(input: &ParsedInput) -> Option<usize> {
-    let mut seq = input.to_string();
+pub fn parse(input: &str) -> Result<ParsedInput, Box<dyn Error>> {
+    let mut seq = input.trim().to_string();
+
     for _ in 0..40 {
         seq = say(&seq);
     }
-    seq.len().into()
-}
+    let p1_ans = seq.len();
 
-pub fn part2(input: &ParsedInput) -> Option<usize> {
-    let mut seq = input.to_string();
-    for _ in 0..50 {
+    for _ in 0..10 {
         seq = say(&seq);
     }
-    seq.len().into()
+
+    Ok((p1_ans, seq.len()))
 }
+
+pub fn part1(input: &ParsedInput) -> Option<usize> { input.0.into() }
+
+pub fn part2(input: &ParsedInput) -> Option<usize> { input.1.into() }
